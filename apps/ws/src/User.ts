@@ -1,5 +1,7 @@
+
+import { COINS, Number, OutgoingMessages } from "./types";
+import { GameManager } from "./GameManager";
 import { WebSocket } from "ws";
-import { COINS } from "./types";
 
 
 
@@ -9,9 +11,9 @@ export class User {
     name : string;
     balance : number;
     locked : number ;
-    ws : WebSocket
+    ws :  WebSocket
 
-    constructor(id : number , name :string , balance:number , ws : WebSocket) {
+    constructor(id : number , name :string , ws : WebSocket) {
 
         this.id = id ;
         this.name = name ;
@@ -20,14 +22,31 @@ export class User {
 
     }
 
-    bet(amount : COINS) {
+    bet(clientId : string , amount : COINS , betNumber : Number) {
        this.balance -= amount;
        this.locked += amount;
-       this.ws.send(JSON.stringify({
-        type :"bet",
-        amount :amount,
-        balance: this.balance,
-        locked : this.locked
-       }))
+      const response =  GameManager.getInstanmce().bet(amount , betNumber , this.id );
+      if(response) {
+        this.send({
+            clientId,
+            type :"bet",
+            amount :amount,
+            balance: this.balance,
+            locked : this.locked
+          })
+        } else{
+        this.send({
+            type :"bet-undo",
+            clientId,
+            amount :amount,
+            balance: this.balance,
+            locked : this.locked
+           })      
+    }
+       
+    }
+
+    send(payLoad : OutgoingMessages) {
+
     }
 }

@@ -1,6 +1,13 @@
 
 export type OutgoingMessages = {
   type: "bet" ;
+  clientId : string ;
+  amount : number ; 
+  balance  :number;
+  locked : number;
+} | {
+  type: "bet-undo" ;
+  clientId : string ;
   amount : number ; 
   balance  :number;
   locked : number;
@@ -60,4 +67,10 @@ export enum GameState {
    CanBet ,
    CantBet , 
    GameOver
+}
+
+export type Bet = {
+  id : number ; 
+  amount  : number ; 
+  number  : number ;
 }
