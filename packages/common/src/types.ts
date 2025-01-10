@@ -1,5 +1,21 @@
-
-export type OutgoingMessages = {
+export type IncomingMessage = {
+    type: "bet" ;
+    clientId : string ;
+    amount : number ; 
+    number : number;
+} | {
+  type : "start-game",
+} | {
+  type : "end-game",
+  output : Number
+} | {
+  type : "stop-bets",
+  
+}
+export type OutgoingMessages ={
+     type : "current-state";
+     state : GameState;
+} | {
     type: "bet" ;
     clientId : string ;
     amount : number ; 
@@ -15,10 +31,21 @@ export type OutgoingMessages = {
     type : "won" ;
     balance : number;
     locked : number;
+    wonAmount : number;
+    outcome : Number;
   } | {
     type : "lost"
     balance : number;
     locked : number;
+    outcome :Number;
+  } | {
+    type : "start-game",
+  } | {
+    type : "end-game",
+    output : Number
+  } | {
+    type : "stop-bets",
+  
   }
   
   export enum COINS {

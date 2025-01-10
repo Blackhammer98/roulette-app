@@ -12,7 +12,7 @@ private constructor() {
     
 }
 
-public static getInstanmce(){
+public static getInstance(){
     if(!GameManager.instance) { 
         GameManager.instance = new GameManager();
     }
@@ -30,16 +30,30 @@ public bet(amount : number ,betNumber : Number ,  id : number): boolean {
 
 public start() {
     this.state = GameState.CanBet;
+    UserManager.getInstance().broadcast({
+        type: "start-game" ,
+    })
+  
+}
+ stopBets() {
+    this.state = GameState.CantBet;
+    UserManager.getInstance().broadcast({
+       type : "stop-bets",
+    })
 }
 
 public end(output : Number) {
     this._lastWinner = output;
+    console.log(this.bets)
     this.bets.forEach(bet => {
         if(bet.number === output) {
-            UserManager.getInstanmce().won(bet.id , bet.amount , output);
+            UserManager.getInstance().won(bet.id , bet.amount , output);
         }else{
-            UserManager.getInstanmce().lost(bet.id , bet.amount , output);
+            UserManager.getInstance().lost(bet.id , bet.amount , output);
         }
     });
+    this.state = GameState.GameOver;
+    this._lastWinner = output ;
+    UserManager.getInstance().flush(output);
 }
 }
