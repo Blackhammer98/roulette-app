@@ -1,4 +1,5 @@
-import { Bet, GameState, Number } from "./types";
+import { Bet, GameState, Number } from "@repo/common/types";
+import { UserManager } from "./UserManager";
 
 export class GameManager {
     state : GameState = GameState.GameOver;
@@ -33,6 +34,12 @@ public start() {
 
 public end(output : Number) {
     this._lastWinner = output;
-    
+    this.bets.forEach(bet => {
+        if(bet.number === output) {
+            UserManager.getInstanmce().won(bet.id , bet.amount , output);
+        }else{
+            UserManager.getInstanmce().lost(bet.id , bet.amount , output);
+        }
+    });
 }
 }

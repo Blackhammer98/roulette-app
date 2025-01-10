@@ -1,5 +1,5 @@
 {
-  "name": "Gambling-App",
+  "name": "gambling-app",
   "private": true,
   "scripts": {
     "build": "turbo build",

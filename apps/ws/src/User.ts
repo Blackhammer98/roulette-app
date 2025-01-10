@@ -1,16 +1,16 @@
 
-import { COINS, Number, OutgoingMessages } from "./types";
+import { COINS, Number, OutgoingMessages } from "@repo/common/types";
 import { GameManager } from "./GameManager";
 import { WebSocket } from "ws";
 
-
+const MULTIPLIER = 17
 
 
 export class User {
     id : number ; 
     name : string;
     balance : number;
-    locked : number ;
+    locked? : number ;
     ws :  WebSocket
 
     constructor(id : number , name :string , ws : WebSocket) {
@@ -32,7 +32,7 @@ export class User {
             type :"bet",
             amount :amount,
             balance: this.balance,
-            locked : this.locked
+            locked: this.locked
           })
         } else{
         this.send({
@@ -47,6 +47,27 @@ export class User {
     }
 
     send(payLoad : OutgoingMessages) {
+      this.ws.send(JSON.stringify(payLoad));
 
     }
+
+    won(amount : number , output : Number) {
+      this.balance += amount * (output === Number.Zero ? MULTIPLIER * 2 : MULTIPLIER) ; ; 
+      this.locked -= amount;
+      this.send({
+        type : "won" ,
+         balance : this.balance,
+         locked : this.locked
+      })
+    }
+
+    lost(amount : number , output : Number) { 
+      this.locked -= amount ;
+      this.send({
+        type : "lost" ,
+         balance : this.balance,
+         locked : this.locked
+      })
+    }
 }
+
